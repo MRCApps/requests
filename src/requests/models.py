@@ -586,8 +586,8 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
         content_type = None
 
         if not data and json is not None:
-            # urllib3 requires a bytes-like body. Python 2's json.dumps
-            # provides this natively, but Python 3 gives a Unicode string.
+            # urllib3 requires a bytes-like body. json.dumps produces a
+            # str; we need bytes for the request body.
             content_type = "application/json"
 
             try:
@@ -702,7 +702,7 @@ class PreparedRequest(RequestEncodingMixin, RequestHooksMixin):
         """Prepares the given HTTP cookie data.
 
         This function eventually generates a ``Cookie`` header from the
-        given cookies using cookielib. Due to cookielib's design, the header
+        given cookies using ``http.cookiejar``. Due to its design, the header
         will not be regenerated if it already exists, meaning this function
         can only be called once for the life of the
         :class:`PreparedRequest <PreparedRequest>` object. Any subsequent calls
